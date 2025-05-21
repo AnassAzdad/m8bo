@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Clue 2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Clue 2</h1>
+    <p id="clue"></p>
+    <a href="index.html">Terug naar start</a>
+</div>
+
+<script>
+    const killer = localStorage.getItem("killer");
+
+    const clues = {
+        "Alexia": "Er stond een advocatenkaartje van Alexia in de broekzak van het slachtoffer.",
+        "Brian": "Er zat bloed op de jas van Brian.",
+        "Carmen": "Carmen logde in op het WiFi-netwerk van het slachtoffer vlak voor de moord.",
+        "Dylan": "Op Dylan's telefoon werd een dreigbericht gevonden.",
+        "Elif": "Elif had de sleutel van het kantoor die dag.",
+        "Faas": "Faas had een accessoire dat overeenkwam met iets op de crime scene."
+    };
+
+    document.getElementById("clue").innerText = clues[killer];
+</script>
+</body>
+</html>

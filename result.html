@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kies de moordenaar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Wie is de moordenaar?</h1>
+        <button onclick="check('Alexia')">Alexia Vermeer</button>
+        <button onclick="check('Brian')">Brian de Wit</button>
+        <button onclick="check('Carmen')">Carmen Koster</button>
+        <button onclick="check('Dylan')">Dylan van Dijk</button>
+        <button onclick="check('Elif')">Elif Kaya</button>
+        <button onclick="check('Faas')">Faas Jansen</button>
+
+        <a href="index.html">Terug naar start</a>
+    </div>
+
+    <script>
+        function check(choice) {
+            const killer = localStorage.getItem("killer");
+            if (choice === killer) {
+                window.location.href = "correct.html";
+            } else {
+                window.location.href = "wrong.html";
+            }
+        }
+    </script>
+</body>
+
+</html>

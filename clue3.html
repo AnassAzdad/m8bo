@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Clue 3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Clue 3</h1>
+    <p id="clue"></p>
+    <a href="index.html">Terug naar start</a>
+</div>
+
+<script>
+    const killer = localStorage.getItem("killer");
+
+    const clues = {
+        "Alexia": "Een haarlok van Alexia werd gevonden op het kussen van het slachtoffer.",
+        "Brian": "Brian’s schoenzool kwam overeen met afdrukken op de plaats delict.",
+        "Carmen": "Er was een usb-stick van Carmen in de laptop van het slachtoffer.",
+        "Dylan": "Dylan’s vingerafdrukken stonden op het keukenmes.",
+        "Elif": "Elif’s parfum werd geroken in de kamer.",
+        "Faas": "Faas' DNA zat op een glas in de woonkamer."
+    };
+
+    document.getElementById("clue").innerText = clues[killer];
+</script>
+</body>
+</html>
