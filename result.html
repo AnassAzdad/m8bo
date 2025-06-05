@@ -16,16 +16,19 @@
         <button onclick="check('Dylan')">Dylan van Dijk</button>
         <button onclick="check('Elif')">Elif Kaya</button>
         <button onclick="check('Faas')">Faas Jansen</button>
-
-        <a href="index.html">Terug naar start</a>
+        <div class="backButton">
+            <a href="index.html">&#60;&#60; Terug naar start</a>
+        </div>
     </div>
 
     <script>
         function check(choice) {
             const killer = localStorage.getItem("killer");
             if (choice === killer) {
+                localStorage.removeItem("killer");
                 window.location.href = "correct.html";
             } else {
+                localStorage.removeItem("killer");
                 window.location.href = "wrong.html";
             }
         }
