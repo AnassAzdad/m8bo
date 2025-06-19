@@ -1,30 +1,183 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <title>Clue 3</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Clue 3</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('animations/forestnight.gif') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeInPage 1s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeInPage {
+      to {
+        opacity: 1;
+      }
+    }
+    #introAnim {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 1.5s ease;
+    }
+    #introAnim.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #clueContent {
+      display: none;
+      margin-top: 80px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      border-radius: 15px;
+      font-size: 20px;
+      line-height: 1.5;
+      box-shadow: 0 0 30px rgba(255,255,255,0.1);
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    #clueContent.visible {
+      opacity: 1;
+      display: block;
+    }
+    a {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 12px 24px;
+      background: #00cc99;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    a:hover {
+      background: #00b386;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>Clue 3</h1>
-    <p id="clue"></p>
-    <a href="index.html">Terug naar start</a>
+
+<div id="introAnim">
+  <video src="animations/knife.mp4" autoplay muted></video>
+  <audio id="knifeSound" src="sounds/slash.mp3" autoplay></audio>
+</div>
+
+<div id="clueContent">
+  <h1>Clue 3</h1>
+  <p id="clue"></p>
+  <a href="index.html">Terug naar start</a>
 </div>
 
 <script>
-    const killer = localStorage.getItem("killer");
 
-    const clues = {
-        "Alexia": "Een haarlok van Alexia werd gevonden op het kussen van het slachtoffer.",
-        "Brian": "Brian’s schoenzool kwam overeen met afdrukken op de plaats delict.",
-        "Carmen": "Er was een usb-stick van Carmen in de laptop van het slachtoffer.",
-        "Dylan": "Dylan’s vingerafdrukken stonden op het keukenmes.",
-        "Elif": "Elif’s parfum werd geroken in de kamer.",
-        "Faas": "Faas' DNA zat op een glas in de woonkamer."
-    };
+  if (!localStorage.getItem("killer")) {
+    const suspects = ["Alexia", "Brian", "Carmen", "Dylan", "Elif", "Faas"];
+    const randomKiller = suspects[Math.floor(Math.random() * suspects.length)];
+    localStorage.setItem("killer", randomKiller);
+  }
+  const killer = localStorage.getItem("killer");
 
-    document.getElementById("clue").innerText = clues[killer];
+  // Clues per killer (5 per killer)
+  const clues = {
+    "Alexia": [
+      "Een haarstrik met bloed lag naast het slachtoffer – Alexia droeg diezelfde strik.",
+      "Alexia werd gespot vlakbij het slachtoffer kort voor de moord.",
+      "Er is vingerafdruk gevonden op het mes die bij Alexia hoort.",
+      "Alexia had een motief vanwege een ruzie van gisteren.",
+      "Een wit jurkje van Alexia is beschadigd en zit onder het bloed."
+    ],
+    "Brian": [
+      "Een gescheurde leren jas werd gevonden – precies zoals Brian die altijd draagt.",
+      "Brian's voetafdrukken zijn gevonden op de plaats delict.",
+      "Brian heeft een alibi dat niet klopt volgens getuigen.",
+      "Een brief met bedreigingen aan het slachtoffer werd gevonden in Brians kamer.",
+      "Brian was de laatste die het slachtoffer levend zag."
+    ],
+    "Carmen": [
+      "De spiegel bevatte lippenstiftletters. Carmen had die kleur net gekocht.",
+      "Carmen's sieraden werden gevonden vlakbij het slachtoffer.",
+      "Een krabspoor op het slachtoffer matcht met Carmen's nagels.",
+      "Carmen was jaloers op het slachtoffer vanwege een promotie.",
+      "Er is een haarlok van Carmen gevonden in de kamer."
+    ],
+    "Dylan": [
+      "Een polsbandje met een clublogo werd gevonden. Dylan was daar gisteren nog.",
+      "Dylan heeft een geschiedenis met het slachtoffer die niet bekend is.",
+      "De moordwapen werd gevonden met Dylan's DNA.",
+      "Dylan werd gespot vlakbij het huis van het slachtoffer.",
+      "Dylan's telefoon toont verdachte berichten vlak voor de moord."
+    ],
+    "Elif": [
+      "In de afvoer zat een zilveren ring die Elif altijd draagt.",
+      "Elif heeft een motief vanwege een geldkwestie met het slachtoffer.",
+      "Elif's kleding heeft bloedsporen die passen bij het slachtoffer.",
+      "Er is een getuige die Elif vlak voor de moord zag.",
+      "Elif’s pasje werd gevonden in het slachtoffer’s tas."
+    ],
+    "Faas": [
+      "Er lag een kapotte telefoon met Faas' ID-kaart ernaast.",
+      "Faas werd betrapt op liegen over zijn verblijfplaats.",
+      "Faas heeft de sleutel van het huis waar de moord gebeurde.",
+      "Er zijn camerabeelden waar Faas vlak voor de moord te zien is.",
+      "Faas had ruzie met het slachtoffer die uit de hand liep."
+    ]
+  };
+
+  function getSeenClues() {
+    return JSON.parse(localStorage.getItem("seenClues") || "[]");
+  }
+
+  function saveClue(clue) {
+    let seen = getSeenClues();
+    if (!seen.includes(clue)) {
+      seen.push(clue);
+      localStorage.setItem("seenClues", JSON.stringify(seen));
+    }
+  }
+
+  function getRandomNewClue() {
+    const killerClues = clues[killer];
+    const seen = getSeenClues();
+    const unseen = killerClues.filter(c => !seen.includes(c));
+    if (unseen.length === 0) {
+      // Alles al gezien, kies random uit alle clues
+      return killerClues[Math.floor(Math.random() * killerClues.length)];
+    }
+    return unseen[Math.floor(Math.random() * unseen.length)];
+  }
+
+  const introAnim = document.getElementById("introAnim");
+  const clueContent = document.getElementById("clueContent");
+  const clueP = document.getElementById("clue");
+
+  const clueToShow = getRandomNewClue();
+  saveClue(clueToShow);
+
+  clueP.textContent = clueToShow;
+
+  setTimeout(() => {
+    introAnim.classList.add("hidden");
+    setTimeout(() => {
+      introAnim.style.display = "none";
+      clueContent.classList.add("visible");
+    }, 1500);
+  }, 3000);
 </script>
+
 </body>
 </html>

@@ -1,35 +1,83 @@
 <!DOCTYPE html>
 <html lang="nl">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Kies de moordenaar</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Kies de Moordenaar</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('animations/forestnight.gif') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeInPage 1s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeInPage {
+      to {
+        opacity: 1;
+      }
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      border-radius: 15px;
+    }
+    h1 {
+      font-size: 45px;
+      margin-bottom: 20px;
+    }
+    .killer-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    .killer-buttons button {
+      background: #222;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .killer-buttons button:hover {
+      background: #444;
+      transform: scale(1.05);
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Wie is de moordenaar?</h1>
-        <button onclick="check('Alexia')">Alexia Vermeer</button>
-        <button onclick="check('Brian')">Brian de Wit</button>
-        <button onclick="check('Carmen')">Carmen Koster</button>
-        <button onclick="check('Dylan')">Dylan van Dijk</button>
-        <button onclick="check('Elif')">Elif Kaya</button>
-        <button onclick="check('Faas')">Faas Jansen</button>
-
-        <a href="index.html">Terug naar start</a>
+  <div class="container">
+    <h1>Wie denk jij dat de moordenaar is?</h1>
+    <div class="killer-buttons">
+      <button onclick="check('Alexia')">Alexia</button>
+      <button onclick="check('Brian')">Brian</button>
+      <button onclick="check('Carmen')">Carmen</button>
+      <button onclick="check('Dylan')">Dylan</button>
+      <button onclick="check('Elif')">Elif</button>
+      <button onclick="check('Faas')">Faas</button>
     </div>
+  </div>
 
-    <script>
-        function check(choice) {
-            const killer = localStorage.getItem("killer");
-            if (choice === killer) {
-                window.location.href = "correct.html";
-            } else {
-                window.location.href = "wrong.html";
-            }
-        }
-    </script>
+  <script>
+    function check(name) {
+      const killer = localStorage.getItem("killer");
+      if (name === killer) {
+        localStorage.removeItem("killer"); // 
+        window.location.href = "correct.html";
+      } else {
+        window.location.href = "wrong.html"; 
+      }
+    }
+  </script>
 </body>
-
 </html>

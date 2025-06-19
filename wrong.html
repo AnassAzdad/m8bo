@@ -1,15 +1,84 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <title>Fout!</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Fout Geraden...</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body.wrong-bg {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #000;
+      color: #ff4444;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 2s ease-in-out;
+      overflow: hidden;
+      padding: 0 20px;
+    }
+
+    .content {
+      max-width: 600px;
+    }
+
+    @keyframes redSmoke {
+      0%   { box-shadow: 0 0 60px 30px rgba(255,0,0,0.15); }
+      50%  { box-shadow: 0 0 90px 40px rgba(255,0,0,0.4); }
+      100% { box-shadow: 0 0 60px 30px rgba(255,0,0,0.15); }
+    }
+
+    body.wrong-bg::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -1;
+      background: radial-gradient(circle at center, rgba(255,0,0,0.1) 0%, transparent 70%);
+      animation: redSmoke 6s ease-in-out infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    h1 {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 40px;
+      padding: 15px 30px;
+      background: #ff4444;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    a:hover {
+      background: red;
+    }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Foute keuze!</h1>
-        <p>Helaas, dat is niet de dader. Probeer het nog eens.</p>
-        <a href="index.html">Opnieuw spelen</a>
-    </div>
+<body class="wrong-bg">
+  <div class="content">
+    <h1>💀 Fout geraden...</h1>
+    <p>Dit was niet de juiste moordenaar.<br>Maar geen zorgen, je kunt het opnieuw proberen.</p>
+    <a href="result.html">🔁 Probeer opnieuw</a>
+  </div>
 </body>
 </html>
