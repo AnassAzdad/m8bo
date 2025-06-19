@@ -56,6 +56,7 @@
   </style>
 </head>
 <body>
+<<<<<<< HEAD
   <div class="container">
     <h1>Wie denk jij dat de moordenaar is?</h1>
     <div class="killer-buttons">
@@ -65,9 +66,23 @@
       <button onclick="check('Dylan')">Dylan</button>
       <button onclick="check('Elif')">Elif</button>
       <button onclick="check('Faas')">Faas</button>
+=======
+    <div class="container">
+        <h1>Wie is de moordenaar?</h1>
+        <button onclick="check('Alexia')">Alexia Vermeer</button>
+        <button onclick="check('Brian')">Brian de Wit</button>
+        <button onclick="check('Carmen')">Carmen Koster</button>
+        <button onclick="check('Dylan')">Dylan van Dijk</button>
+        <button onclick="check('Elif')">Elif Kaya</button>
+        <button onclick="check('Faas')">Faas Jansen</button>
+        <div class="backButton">
+            <a href="index.html">&#60;&#60; Terug naar start</a>
+        </div>
+>>>>>>> 7210fb7a2c445dfe51148768344005d832ff866a
     </div>
   </div>
 
+<<<<<<< HEAD
   <script>
     function check(name) {
       const killer = localStorage.getItem("killer");
@@ -79,5 +94,19 @@
       }
     }
   </script>
+=======
+    <script>
+        function check(choice) {
+            const killer = localStorage.getItem("killer");
+            if (choice === killer) {
+                localStorage.removeItem("killer");
+                window.location.href = "correct.html";
+            } else {
+                localStorage.removeItem("killer");
+                window.location.href = "wrong.html";
+            }
+        }
+    </script>
+>>>>>>> 7210fb7a2c445dfe51148768344005d832ff866a
 </body>
 </html>
