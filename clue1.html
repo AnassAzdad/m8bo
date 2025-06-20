@@ -34,19 +34,24 @@
   </div>
 
   <script>
-    // 1) INIT GAMESTATE
-    if (!localStorage.getItem('gameStarted')) {
-      localStorage.setItem('gameStarted','1');
-      localStorage.setItem('seenClues','[]');
-      localStorage.setItem('endTime', Date.now() + 10*60*1000);
-    }
-    if (!localStorage.getItem('killer')) {
-      const ks = ['Alexia','Brian','Carmen','Dylan','Elif','Faas'];
-      localStorage.setItem('killer', ks[Math.floor(Math.random()*ks.length)]);
-    }
-    const killer = localStorage.getItem('killer');
+    const page = window.location.pathname;
 
-    // 2) ALLE 5 HINTS PER VERDACHTE
+    // 1. INIT
+    if (!localStorage.getItem("gameStarted")) {
+      localStorage.setItem("gameStarted", "1");
+      localStorage.setItem("seenClues", "[]");
+      localStorage.setItem("visitedPages", "[]");
+      localStorage.setItem("cluePerPage", "{}");
+      localStorage.setItem("endTime", Date.now() + 10*60*1000);
+    }
+
+    if (!localStorage.getItem("killer")) {
+      const ks = ["Alexia","Brian","Carmen","Dylan","Elif","Faas"];
+      localStorage.setItem("killer", ks[Math.floor(Math.random() * ks.length)]);
+    }
+
+    const killer = localStorage.getItem("killer");
+
     const clues = {
       "Alexia":[
         "Een haarstrik met bloed lag naast het slachtoffer – Alexia droeg diezelfde strik.",
@@ -92,77 +97,90 @@
       ]
     };
 
-    // 3) HELPERS voor seenClues
     function getSeenClues(){
       return JSON.parse(localStorage.getItem('seenClues') || '[]');
     }
+    function getVisitedPages(){
+      return JSON.parse(localStorage.getItem("visitedPages") || "[]");
+    }
+    function markPageVisited(){
+      const visited = getVisitedPages();
+      if (!visited.includes(page)) {
+        visited.push(page);
+        localStorage.setItem("visitedPages", JSON.stringify(visited));
+        return false;
+      }
+      return true;
+    }
+
     function saveClue(c){
       const arr = getSeenClues();
       if (!arr.includes(c)){
         arr.push(c);
-        localStorage.setItem('seenClues', JSON.stringify(arr));
+        localStorage.setItem("seenClues", JSON.stringify(arr));
       }
     }
 
-    // 4) KIES ÉÉN CLUE (zelfs als je er al 5 hebt gezien)
-    const seen = getSeenClues();
-    // filter de nog-niet-gebruikte hints
-    let pool = clues[killer].filter(c => !seen.includes(c));
+    const alreadyVisited = markPageVisited();
     let pick;
-    if (pool.length > 0) {
-      pick = pool[Math.floor(Math.random()*pool.length)];
-      saveClue(pick);
+    if (alreadyVisited) {
+      const saved = JSON.parse(localStorage.getItem("cluePerPage") || "{}");
+      pick = saved[page] || "Deze clue heb je al gehad.";
     } else {
-      // alle hints al gezien? kies dan willekeurig
-      pick = clues[killer][Math.floor(Math.random()*clues[killer].length)];
-    }
-    document.getElementById('clue').innerText = pick;
+      const seen = getSeenClues();
+      const pool = clues[killer].filter(c => !seen.includes(c));
+      pick = pool.length > 0
+        ? pool[Math.floor(Math.random() * pool.length)]
+        : clues[killer][Math.floor(Math.random() * clues[killer].length)];
+      saveClue(pick);
 
-    // 5) UPDATE PROGRESS-BAR
+      const cluePerPage = JSON.parse(localStorage.getItem("cluePerPage") || "{}");
+      cluePerPage[page] = pick;
+      localStorage.setItem("cluePerPage", JSON.stringify(cluePerPage));
+    }
+    document.getElementById("clue").innerText = pick;
+
     function updateProgress(){
       const count = getSeenClues().length, total = 5;
-      const pct = Math.min(100, count/total*100);
-      const bar = document.getElementById('progressBar');
-      bar.style.width = pct + '%';
+      const pct = Math.min(100, count / total * 100);
+      const bar = document.getElementById("progressBar");
+      bar.style.width = pct + "%";
       bar.textContent = `${count}/${total}`;
     }
 
-    // 6) UPDATE TIMER
     function updateTimer(){
-      const end  = +localStorage.getItem('endTime');
+      const end = +localStorage.getItem("endTime");
       const diff = end - Date.now();
-      const el   = document.getElementById('timer');
-      if (diff <= 0) {
-        el.textContent = '⏰ Tijd op!';
+      const el = document.getElementById("timer");
+      if (diff <= 0){
+        el.textContent = "⏰ Tijd op!";
         clearInterval(timerInt);
       } else {
-        const m = String(Math.floor(diff/60000)).padStart(2,'0');
-        const s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+        const m = String(Math.floor(diff / 60000)).padStart(2,"0");
+        const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,"0");
         el.textContent = `${m}:${s}`;
       }
     }
     const timerInt = setInterval(updateTimer, 1000);
 
-    // 7) DROPDOWN “Clues verzameld”
-    document.getElementById('toggleClues').onclick = () => {
-      const dd = document.getElementById('clue-dropdown');
-      if (dd.classList.contains('open')){
-        dd.classList.remove('open');
+    document.getElementById("toggleClues").onclick = () => {
+      const dd = document.getElementById("clue-dropdown");
+      if (dd.classList.contains("open")){
+        dd.classList.remove("open");
       } else {
-        const ul = document.getElementById('clue-list');
-        ul.innerHTML = '';
+        const ul = document.getElementById("clue-list");
+        ul.innerHTML = "";
         getSeenClues().forEach(c => {
-          const li = document.createElement('li');
+          const li = document.createElement("li");
           li.textContent = c;
           ul.appendChild(li);
         });
-        dd.classList.add('open');
+        dd.classList.add("open");
       }
     };
 
-    // 8) ON LOAD: FADE-IN + EERSTE UPDATES
-    window.addEventListener('load', ()=>{
-      document.getElementById('clueContent').classList.add('visible');
+    window.addEventListener("load", () => {
+      document.getElementById("clueContent").classList.add("visible");
       updateProgress();
       updateTimer();
     });
