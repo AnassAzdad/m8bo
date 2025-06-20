@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mijn Clues</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Mijn Verzamelde Clues</h1>
+    <ul id="cluesList"></ul>
+    <button id="resetClues">Reset clues</button>
+    <p><a href="index.html">↩️ Terug naar start</a></p>
+  </div>
+
+  <script>
+    const list = document.getElementById("cluesList");
+    const seen = JSON.parse(localStorage.getItem("seenClues")||"[]");
+    if (seen.length === 0) {
+      list.innerHTML = "<li>Je hebt nog geen clues verzameld.</li>";
+    } else {
+      seen.forEach(c => {
+        const li = document.createElement("li");
+        li.textContent = c;
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById("resetClues").onclick = () => {
+      localStorage.removeItem("seenClues");
+      location.reload();
+    };
+  </script>
+</body>
+</html>

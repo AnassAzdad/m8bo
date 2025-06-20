@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Kies de Moordenaar</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .suspect-btn {
+      display: inline-block;
+      margin: 15px;
+      padding: 15px 25px;
+      font-size: 20px;
+      cursor: pointer;
+      background-color: #222;
+      border: 2px solid red;
+      color: white;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .suspect-btn:hover {
+      background-color: red;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 60px;
+      color: red;
+    }
+    .container {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .debug {
+      margin-top: 40px;
+      font-size: 16px;
+      color: lime;
+    }
+    .reset-btn {
+      margin-top: 20px;
+      padding: 8px 18px;
+      font-size: 14px;
+      background-color: #444;
+      color: white;
+      border: 1px solid lime;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Wie denk jij dat de moordenaar is?</h1>
+  <div class="container">
+    <button class="suspect-btn" onclick="check('Alexia')">Alexia</button>
+    <button class="suspect-btn" onclick="check('Brian')">Brian</button>
+    <button class="suspect-btn" onclick="check('Carmen')">Carmen</button>
+    <button class="suspect-btn" onclick="check('Dylan')">Dylan</button>
+    <button class="suspect-btn" onclick="check('Elif')">Elif</button>
+    <button class="suspect-btn" onclick="check('Faas')">Faas</button>
+
+    <div class="debug">
+      <p><strong>DEBUG:</strong> De gekozen killer is: <span id="killerName"></span></p>
+      <button class="reset-btn" onclick="resetKiller()">Reset killer (opnieuw kiezen)</button>
+    </div>
+  </div>
+
+  <script>
+    function check(name) {
+      const killer = localStorage.getItem("killer");
+      if (name === killer) {
+        window.location.href = "correct.html";
+      } else {
+        window.location.href = "wrong.html";
+      }
+    }
+
+    function resetKiller() {
+      const suspects = ["Alexia", "Brian", "Carmen", "Dylan", "Elif", "Faas"];
+      const randomKiller = suspects[Math.floor(Math.random() * suspects.length)];
+      localStorage.setItem("killer", randomKiller);
+      document.getElementById("killerName").innerText = randomKiller;
+      alert("Killer is opnieuw gekozen: " + randomKiller);
+    }
+
+    // Laat huidige killer zien in debug
+    const currentKiller = localStorage.getItem("killer");
+    document.getElementById("killerName").innerText = currentKiller || "NOG GEEN GEKOZEN";
+  </script>
+</body>
+</html>

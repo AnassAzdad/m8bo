@@ -3,116 +3,184 @@
 <head>
   <meta charset="UTF-8">
   <title>Detective Terminal</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
   <style>
-    body.fadein {
-      animation: fadeInIndex 1.2s ease-in-out;
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: url('animations/forestnight.gif') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      text-align: center;
-      padding: 40px 20px;
-    }
 
-    @keyframes fadeInIndex {
-      0% {
-        opacity: 0;
-        transform: scale(0.97);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
+    #clue-widget {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1000;
     }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 40px;
-      border-radius: 15px;
-    }
-
-    h1 {
-      font-size: 45px;
-      margin-bottom: 20px;
-    }
-
-    p {
-      font-size: 18px;
-      margin-bottom: 15px;
-      line-height: 1.6;
-    }
-
-    .killer-buttons {
-      margin-top: 40px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-    }
-
-    .killer-buttons button {
-      background: #222;
-      color: #fff;
-      border: 1px solid #555;
-      padding: 12px 24px;
-      font-size: 16px;
+    #clue-widget button {
+      background: rgba(60, 0, 60, 0.9);
+      color: #e0aaff;
+      border: 2px solid #e0aaff;
+      padding: 0.4rem 0.8rem;
+      font-size: 1.2rem;
+      border-radius: 0.4rem;
       cursor: pointer;
-      border-radius: 8px;
-      transition: 0.3s;
+      box-shadow: 0 0 0.3rem #e0aaff, inset 0 0 0.2rem #330033;
+    }
+    #clue-widget button:hover {
+      background: rgba(80, 0, 80, 0.95);
     }
 
-    .killer-buttons button:hover {
-      background: #444;
-      transform: scale(1.05);
+    
+    #clue-dropdown {
+      position: fixed;
+      top: 5rem;      
+      left: 1rem;
+      background: rgba(20,0,20,0.95);
+      border: 2px solid #e0aaff;
+      border-radius: 0.4rem;
+      padding: 0.5rem;
+      width: 160px;     
+      max-height: 100px;
+      overflow-y: auto;
+      box-shadow: 0 0 0.8rem rgba(0,0,0,0.7);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    #clue-dropdown.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    #clue-dropdown ul {
+      list-style: disc inside;
+      margin: 0; padding: 0;
+    }
+    #clue-dropdown li {
+      margin: 0.3rem 0;
+      font-size: 1.1rem;
+      color: #ddd;
+      line-height: 1.2;
+      word-wrap: break-word;
     }
 
-    a {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 12px 24px;
-      background: #00cc99;
-      color: #000;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: 0.3s;
-    }
 
-    a:hover {
-      background: #00b386;
+    #clue-dropdown::-webkit-scrollbar {
+      width: 5px;
+    }
+    #clue-dropdown::-webkit-scrollbar-thumb {
+      background: #e0aaff;
+      border-radius: 2px;
     }
   </style>
 </head>
-<body class="fadein">
-  <div class="container">
-    <h1>🕵️‍♂️ Welkom, detective</h1>
-    <p>In deze kamer is een moord gepleegd. Er zijn 6 verdachten, maar slechts één is de dader.</p>
-    <p>Zoek de QR-codes in de ruimte. Elke code geeft een aanwijzing die alleen past bij jouw moordenaar.</p>
-    <p>Als je genoeg aanwijzingen hebt, klik dan hieronder om de moordenaar te ontmaskeren.</p>
+<body>
+<button id="resetBtn">⟲</button>
 
-    <div class="killer-buttons">
-      <button>Alexia</button>
-      <button>Brian</button>
-      <button>Carmen</button>
-      <button>Dylan</button>
-      <button>Elif</button>
-      <button>Faas</button>
+<script>
+  document.getElementById("resetBtn").onclick = () => {
+    if (confirm("Weet je zeker dat je opnieuw wilt beginnen?")) {
+      localStorage.removeItem("killer");
+      localStorage.removeItem("seenClues");
+      localStorage.removeItem("gameStarted");
+      localStorage.removeItem("endTime");
+      window.location.href = "index.html";
+    }
+  };
+</script>
+
+ 
+  <script>
+    if (!localStorage.getItem('gameStarted')) {
+      localStorage.setItem('gameStarted','1');
+      localStorage.setItem('seenClues', JSON.stringify([]));
+      localStorage.setItem('endTime', Date.now() + 10 * 60 * 1000);
+    }
+  </script>
+
+  <div id="clue-widget">
+    <button id="toggleClues">Clues verzameld</button>
+    <div id="clue-dropdown">
+      <ul id="clue-list"></ul>
     </div>
+  </div>
+
+  <div class="container">
+
+    <div id="timer" class="timer">10:00</div>
+ 
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">0/5</div>
+    </div>
+
+    <h1>🕵️‍♂️ Welkom, detective</h1>
+    <p>Er is een moord gepleegd. Er zijn 6 verdachten, maar slechts één is de dader.</p>
+    <p>Scan de QR-codes om aanwijzingen te verzamelen die bij jouw moordenaar horen.</p>
+    <p>Als je genoeg clues hebt, klik dan hieronder om de killer te ontmaskeren.</p>
 
     <a href="result.html">🔎 Ik ben klaar om de killer te kiezen</a>
   </div>
 
   <script>
-    // Genereer een random killer als er nog geen is
-    if (!localStorage.getItem("killer")) {
-      const killers = ["Alexia", "Brian", "Carmen", "Dylan", "Elif", "Faas"];
-      const randomKiller = killers[Math.floor(Math.random() * killers.length)];
-      localStorage.setItem("killer", randomKiller);
+    // Killer initialisatie
+    if (!localStorage.getItem('killer')) {
+      const killers = ['Alexia','Brian','Carmen','Dylan','Elif','Faas'];
+      localStorage.setItem('killer', killers[Math.floor(Math.random()*killers.length)]);
     }
+
+    // Update voortgangsbalk
+    function updateProgress() {
+      const seen  = JSON.parse(localStorage.getItem('seenClues')||'[]');
+      const total = 5;
+      const count = seen.length;
+      const pct   = Math.min((count/total)*100,100);
+      const bar   = document.getElementById('progressBar');
+      bar.style.width   = pct + '%';
+      bar.textContent   = `${count}/${total}`;
+    }
+
+   
+    function updateTimer() {
+      const end  = parseInt(localStorage.getItem('endTime'),10);
+      const diff = end - Date.now();
+      const el   = document.getElementById('timer');
+      if (diff <= 0) {
+        el.textContent = '⏰ Tijd op!';
+        clearInterval(timerInterval);
+        return;
+      }
+      const m = Math.floor(diff/60000).toString().padStart(2,'0');
+      const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+      el.textContent = `${m}:${s}`;
+    }
+
+    function populateCluesList() {
+      const seen = JSON.parse(localStorage.getItem('seenClues')||'[]');
+      const ul   = document.getElementById('clue-list');
+      ul.innerHTML = '';
+      if (seen.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'Nog geen clues verzameld.';
+        ul.appendChild(li);
+      } else {
+        seen.forEach(c => {
+          const li = document.createElement('li');
+          li.textContent = c;
+          ul.appendChild(li);
+        });
+      }
+    }
+
+
+    document.getElementById('toggleClues').addEventListener('click', () => {
+      const dd = document.getElementById('clue-dropdown');
+      if (dd.classList.contains('open')) {
+        dd.classList.remove('open');
+      } else {
+        populateCluesList();
+        dd.classList.add('open');
+      }
+    });
+
+ 
+    updateProgress();
+    updateTimer();
+    const timerInterval = setInterval(updateTimer,1000);
   </script>
 </body>
 </html>

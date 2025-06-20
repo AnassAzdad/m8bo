@@ -1,68 +1,97 @@
-*,
-*::before,
-*::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+
+.clue-toggle-container {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  text-align: left;
 }
 
-html {
-    font-size: 62.5%;
+.clue-toggle-container button {
+  padding: 0.6rem 1rem;
+  font-size: 1.4rem;
+  background: rgba(40,0,40,0.85);
+  color: #ff55dd;
+  border: 0.15rem solid #ff55dd;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 0 0.5rem #ff55dd, inset 0 0 0.3rem #220022;
 }
 
-body {
-    background-image: url('background.gif'); /* jouw opgeslagen mist-GIF */
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    text-shadow: 0.2rem 0.2rem 0.5rem #000;
+.clue-toggle-container button:hover {
+  background: rgba(70,0,70,0.9);
 }
 
-.container {
-    background-color: rgba(0, 0, 0, 0.65);
-    padding: 4rem;
-    border-radius: 1.2rem;
-    text-align: center;
-    box-shadow: 0 0 2.5rem rgba(0,0,0,0.8);
+
+.reset-button {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  background: #ff4444;
+  color: blue;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.3s;
+  z-index: 9999;
+}
+.reset-button:hover {
+  opacity: 1;
+  background: red;
 }
 
-h1 {
-    font-size: 6rem;
-    color: #ff6600;
-    margin-bottom: 2rem;
+#resetBtn {
+  position: fixed !important;
+  bottom: 15px !important;
+  left: 15px !important;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6e00ff, #a55eea);
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 9999;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, background 0.3s ease;
 }
 
-p {
-    font-size: 2.5rem;
-    color: #eee;
-    margin-bottom: 3rem;
+#resetBtn:hover {
+  background: linear-gradient(135deg, #a55eea, #6e00ff);
+  transform: scale(1.1);
 }
 
-a, button {
-    background-color: #000000dd;
-    color: #ffcc00;
-    padding: 1.5rem 2.5rem;
-    font-size: 2rem;
-    text-decoration: none;
-    border: none;
-    border-radius: 0.6rem;
-    cursor: pointer;
-    transition: 0.3s ease;
+
+
+.clues-dropdown {
+  position: absolute;
+  top: 3.2rem;   /* net onder de knop */
+  left: 0;
+  background: rgba(0,0,0,0.85);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  max-height: 15rem;
+  overflow-y: auto;
+  box-shadow: 0 0 1rem rgba(0,0,0,0.7);
 }
 
-a:hover, button:hover {
-    background-color: #222;
+.clues-dropdown.hidden {
+  display: none;
 }
 
-.backButton{
-    margin-top: 5rem;
+.clues-dropdown ul {
+  list-style: disc inside;
+  margin: 0;
+  padding: 0;
+}
+
+.clues-dropdown li {
+  margin-bottom: 0.6rem;
+  font-size: 1.6rem;
+  color: #ddd;
 }
