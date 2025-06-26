@@ -16,12 +16,12 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      overflow: hidden;
+      overflow-y: auto;
       animation: fadeIn 2s ease-in-out;
     }
 
     .content {
-      max-width: 600px;
+      max-width: 700px;
       padding: 20px;
     }
 
@@ -30,12 +30,12 @@
       margin-bottom: 20px;
     }
 
-    p {
-      font-size: 20px;
+    p, li {
+      font-size: 18px;
       line-height: 1.6;
     }
 
-    a {
+    a.button {
       display: inline-block;
       margin-top: 30px;
       padding: 12px 25px;
@@ -47,8 +47,75 @@
       transition: 0.3s;
     }
 
-    a:hover {
+    a.button:hover {
       background: limegreen;
+    }
+
+    .reveal-btn {
+      margin-top: 25px;
+      font-size: 18px;
+      background: transparent;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .reveal-btn:hover {
+      background: #0f0;
+      color: #000;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.97);
+      color: #0f0;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      z-index: 999;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .overlay h2 {
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+
+    .overlay ul {
+      max-width: 600px;
+      text-align: left;
+      list-style: disc;
+      padding-left: 20px;
+    }
+
+    .overlay li {
+      margin-bottom: 10px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 26px;
+      color: #f00;
+      background: #111;
+      border: 2px solid #f00;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
     }
 
     @keyframes greenSmoke {
@@ -68,18 +135,93 @@
       background: radial-gradient(circle at center, rgba(0,255,0,0.1) 0%, transparent 70%);
       animation: greenSmoke 6s ease-in-out infinite;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to   { opacity: 1; transform: scale(1); }
-    }
   </style>
 </head>
 <body class="correct-bg">
-  <div class="content">
+  <!-- Originele content -->
+  <div class="content" id="mainContent">
     <h1>🎉 Goed geraden!</h1>
-    <p>Je hebt de juiste moordenaar weten te vinden.<br> De zaak is opgelost, detective 🕵️.</p>
-    <a href="index.html">🔁 Speel opnieuw</a>
+    <p id="killerText">Je hebt de juiste moordenaar gevonden.</p>
+
+    <button class="reveal-btn" onclick="openHint()">🔍 Waarom deze persoon?</button>
+
+    <a href="index.html" class="button" onclick="localStorage.clear()">🔁 Speel opnieuw</a>
   </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">
+    <button class="close-btn" onclick="closeHint()">❌</button>
+    <h2>Waarom deze persoon?</h2>
+    <ul id="clueList"></ul>
+  </div>
+
+  <script>
+    const killer = localStorage.getItem("killer");
+    const allClues = {
+      "Sam Schmit": [
+        "De forensische chip registreerde een mannelijke aanwezigheid om 02:16.",
+        "De stemdetectie registreerde een agressieve toon zonder profiel.",
+        "Oude toegangs-ID gedeeld tijdens huwelijk.",
+        "Vingerafdrukken met verhoogde cortisolsporen op medicijnverpakking.",
+        "Laatste gedachte: herinnering aan mishandeling."
+      ],
+      "Onbekende partner": [
+        "AI-chatlog bevatte berichten van onbekend contact: 'Vertrouw me…'",
+        "DNA op wijnglas — geen match in databanken.",
+        "Holografische projectie geactiveerd op slaapkamerwand.",
+        "Huischip detecteerde dopamine — romantisch contact?",
+        "Laatste gedachte: 'Waarom heb ik je vertrouwd?'"
+      ],
+      "Vriendin/zus": [
+        "Geen braaksporen — maar toegang met sleutel.",
+        "Boodschap op spiegel met bekende lipstickkleur.",
+        "Armband met familielid-haareiwitten gevonden.",
+        "Gedachte: 'Ze begrijpt Juna niet zoals ik dat doe.'",
+        "AI-chip registreerde innerlijke strijd over voogdij."
+      ],
+      "Yvonne de Vries": [
+        "112-oproep noemde Mae’s naam pas laat.",
+        "Handafdruk met kalmeringsmiddel op muur.",
+        "Chip detecteerde afhankelijkheid van ouder figuur.",
+        "Kopje met kalmeermiddelen en haar DNA.",
+        "Herinnering: 'Laat me los, mam!'"
+      ],
+      "Arjan de Vries": [
+        "Brief: 'Liefste dochter, of moet ik zeggen vreemdeling?'",
+        "Nicotine-aanslag op Mae’s toetsenbord — zij rookte niet.",
+        "Geheime map met info over vader.",
+        "Herinnering: 'Waarom ben je nu pas terug?'",
+        "Laatste gedachte: 'Hij zei dat hij me zou beschermen…'"
+      ]
+    };
+
+    // Tekst aanpassen met naam van de killer
+    const killerText = document.getElementById("killerText");
+    if (killer) {
+      killerText.innerHTML = `Je hebt de juiste moordenaar gevonden: <strong>${killer}</strong>.`;
+    }
+
+    function openHint() {
+      const overlay = document.getElementById("overlay");
+      const clueList = document.getElementById("clueList");
+      const main = document.getElementById("mainContent");
+
+      clueList.innerHTML = "";
+      const clues = allClues[killer] || [];
+      clues.forEach(clue => {
+        const li = document.createElement("li");
+        li.textContent = clue;
+        clueList.appendChild(li);
+      });
+
+      main.style.display = "none";
+      overlay.style.display = "flex";
+    }
+
+    function closeHint() {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+    }
+  </script>
 </body>
 </html>

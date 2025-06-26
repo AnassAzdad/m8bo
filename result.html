@@ -16,11 +16,13 @@
       animation: fadeInPage 1s ease forwards;
       opacity: 0;
     }
+
     @keyframes fadeInPage {
       to {
         opacity: 1;
       }
     }
+
     .container {
       max-width: 800px;
       margin: 0 auto;
@@ -28,10 +30,12 @@
       padding: 40px;
       border-radius: 15px;
     }
+
     h1 {
       font-size: 45px;
       margin-bottom: 20px;
     }
+
     .killer-buttons {
       display: flex;
       flex-wrap: wrap;
@@ -39,6 +43,7 @@
       gap: 15px;
       margin-top: 30px;
     }
+
     .killer-buttons button {
       background: #222;
       color: #fff;
@@ -49,22 +54,70 @@
       border-radius: 8px;
       transition: 0.3s;
     }
+
     .killer-buttons button:hover {
       background: #444;
       transform: scale(1.05);
+    }
+
+    .return-btn {
+      background-color: #337eff;
+      color: #fff;
+      font-weight: bold;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 40px;
+      transition: 0.3s;
+    }
+
+    .return-btn:hover {
+      background-color: #5599ff;
+    }
+
+    .hint-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #aaa;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 40px;
+    }
+
+    .hint-box h2 {
+      font-size: 24px;
+      color: #e0aaff;
+      margin-bottom: 15px;
+    }
+
+    .hint-box p {
+      font-size: 17px;
+      line-height: 1.5;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Wie denk jij dat de moordenaar is?</h1>
+
     <div class="killer-buttons">
-      <button onclick="check('Alexia')">Alexia</button>
-      <button onclick="check('Brian')">Brian</button>
-      <button onclick="check('Carmen')">Carmen</button>
-      <button onclick="check('Dylan')">Dylan</button>
-      <button onclick="check('Elif')">Elif</button>
-      <button onclick="check('Faas')">Faas</button>
+      <button onclick="check('Sam Schmit')">Sam Schmit</button>
+      <button onclick="check('Onbekende partner')">Onbekende partner</button>
+      <button onclick="check('Vriendin/zus')">Vriendin / Zus</button>
+      <button onclick="check('Yvonne de Vries')">Yvonne de Vries</button>
+      <button onclick="check('Arjan de Vries')">Arjan de Vries</button>
+    </div>
+
+    <!-- Toegevoegde knop binnen .container -->
+    <button class="return-btn" onclick="window.location.href='index.html'">
+      🔁 Nog niet klaar om te kiezen? Ga terug naar start
+    </button>
+
+    <div id="hintContainer" class="hint-box" style="display: none;">
+      <h2>🔍 HINTS</h2>
+      <div id="hintContent"></div>
     </div>
   </div>
 
@@ -72,11 +125,28 @@
     function check(name) {
       const killer = localStorage.getItem("killer");
       if (name === killer) {
-        localStorage.removeItem("killer"); // 
+        localStorage.removeItem("killer");
         window.location.href = "correct.html";
       } else {
-        window.location.href = "wrong.html"; 
+        window.location.href = "wrong.html";
       }
+    }
+
+    const hints = {
+      "Sam Schmit": "De override-code van het slimme slot? Alleen hij kende die. Mae deed aangifte, maar niemand luisterde. Misschien was dat de laatste fout.",
+      "Onbekende partner": "Geen gezicht, geen naam, geen data. Maar iemand die wél naar binnen kwam. Zonder AI-herkenning. Zonder toestemming. Hoe dan?",
+      "Vriendin": "Sleutelbezit, toegang, lipstick op de spiegel. Maar waarom een boodschap die alleen Mae zou begrijpen? Jaloezie laat sporen achter.",
+      "Yvonne de Vries": "Ze was zogenaamd in shock. Maar hoe wist ze waar Mae lag? De stem die Mae’s AI-assistent registreerde… leek wel héél vertrouwd.",
+      "Arjan de Vries": "Opeens weer in beeld. Terwijl Mae hem al jaren niet vertrouwde. En dan tóch toegang tot haar flat? Familiebanden zijn niet altijd veilig."
+    };
+
+    const seen = JSON.parse(localStorage.getItem("seenClues") || "[]");
+    if (seen.length === 5) {
+      const killer = localStorage.getItem("killer");
+      const hintBox = document.getElementById("hintContainer");
+      const hintText = document.getElementById("hintContent");
+      hintBox.style.display = "block";
+      hintText.innerHTML = `<p>${hints[killer]}</p>`;
     }
   </script>
 </body>

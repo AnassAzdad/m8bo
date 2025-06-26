@@ -87,6 +87,14 @@ a:hover,
   transform: scale(1.05);
   box-shadow: 0 0 1rem limegreen;
 }
+.clue-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
 
 /* Index kies-knoppen */
 .killer-buttons {
@@ -94,7 +102,7 @@ a:hover,
   flex-wrap: wrap;
   justify-content: center;
   gap: 1.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 10rem;
 }
 .killer-buttons button {
   background: #222;
@@ -226,3 +234,56 @@ p {
   color: #fff;
   text-shadow: 1px 1px 3px black;
 }
+
+/* ────────────── Responsive Fix voor Mobiel ────────────── */
+@media (max-width: 768px) {
+  html {
+    font-size: 55%; /* iets kleiner op mobiel voor balans */  
+  }
+
+  #clueContent {
+    margin-top: 4rem;
+    padding: 2rem;
+    font-size: 1.8rem;
+  }
+
+  #clue-widget button {
+    font-size: 1.6rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.8rem;
+  }
+
+  #clue-dropdown {
+    width: 90vw;
+    max-height: 15rem;
+    font-size: 1.4rem;
+  }
+
+  #clue-dropdown li {
+    font-size: 1.3rem;
+  }
+
+  .progress-container {
+    height: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .progress-bar {
+    font-size: 1.3rem;
+    line-height: 2rem;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+  }
+
+  p {
+    font-size: 1.7rem;
+  }
+
+  .back-btn {
+    font-size: 1.5rem;
+    padding: 1rem 2rem;
+  }
+}
+

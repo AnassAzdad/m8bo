@@ -34,65 +34,66 @@
   </div>
 
   <script>
+    const page = window.location.pathname;
+
     if (!localStorage.getItem('gameStarted')) {
       localStorage.setItem('gameStarted','1');
       localStorage.setItem('seenClues','[]');
+      localStorage.setItem('visitedPages','[]');
+      localStorage.setItem('cluePerPage','{}');
       localStorage.setItem('endTime', Date.now() + 10*60*1000);
     }
-    if (!localStorage.getItem('killer')) {
-      const ks = ['Alexia','Brian','Carmen','Dylan','Elif','Faas'];
-      localStorage.setItem('killer', ks[Math.floor(Math.random()*ks.length)]);
-    }
+
+  if (!localStorage.getItem("killer")) {
+  const ks = ["Sam Schmit", "Onbekende partner", "Vriendin", "Yvonne de Vries", "Arjan de Vries"];
+  localStorage.setItem("killer", ks[Math.floor(Math.random() * ks.length)]);
+}
+
     const killer = localStorage.getItem('killer');
 
     const clues = {
-      "Alexia":[
-        "Een haarstrik met bloed lag naast het slachtoffer – Alexia droeg diezelfde strik.",
-        "Alexia werd gespot vlakbij het slachtoffer kort voor de moord.",
-        "Er is een vingerafdruk gevonden op het mes die bij Alexia hoort.",
-        "Alexia had een motief vanwege een ruzie van gisteren.",
-        "Een wit jurkje van Alexia is beschadigd en zit onder het bloed."
-      ],
-      "Brian":[
-        "Een gescheurde leren jas werd gevonden – precies zoals Brian die altijd draagt.",
-        "Brian's voetafdrukken zijn gevonden op de plaats delict.",
-        "Brian heeft een alibi dat niet klopt volgens getuigen.",
-        "Een brief met bedreigingen aan het slachtoffer werd gevonden in Brian’s kamer.",
-        "Brian was de laatste die het slachtoffer levend zag."
-      ],
-      "Carmen":[
-        "De spiegel bevatte lippenstiftletters. Carmen had die kleur net gekocht.",
-        "Carmen's sieraden werden gevonden vlakbij het slachtoffer.",
-        "Een krabspoor op het slachtoffer matcht met Carmen’s nagels.",
-        "Carmen was jaloers op het slachtoffer vanwege een promotie.",
-        "Er is een haarlok van Carmen gevonden in de kamer."
-      ],
-      "Dylan":[
-        "Een polsbandje met een clublogo werd gevonden. Dylan was daar gisteren nog.",
-        "Dylan heeft een geschiedenis met het slachtoffer die niet bekend is.",
-        "Het moordwapen werd gevonden met Dylan’s DNA.",
-        "Dylan werd gespot vlakbij het huis van het slachtoffer.",
-        "Dylan's telefoon toont verdachte berichten vlak voor de moord."
-      ],
-      "Elif":[
-        "In de afvoer zat een zilveren ring die Elif altijd draagt.",
-        "Elif heeft een motief vanwege een geldkwestie met het slachtoffer.",
-        "Elif's kleding heeft bloedsporen die passen bij het slachtoffer.",
-        "Een getuige zag Elif vlak voor de moord in de buurt.",
-        "Elif’s pasje werd gevonden in de tas van het slachtoffer."
-      ],
-      "Faas":[
-        "Er lag een kapotte telefoon met Faas’ ID-kaart ernaast.",
-        "Faas werd betrapt op liegen over zijn verblijfplaats.",
-        "Faas heeft de sleutel van het huis waar de moord gebeurde.",
-        "Er zijn camerabeelden waar Faas vlak voor de moord te zien is.",
-        "Faas had ruzie met het slachtoffer die uit de hand liep."
-      ]
-    };
+  "Sam Schmit": [
+    "In Mae’s persoonlijke AI-therapielogboeken stond een versleutelde verwijzing naar een persoon die ze beschreef als 'onvoorspelbaar, controlerend'.",
+    "Een oud communicatiefragment bevat een dreigement gericht aan Mae, met herkenbare woordkeuzes uit eerdere ruzies.",
+    "Een psychologisch profiel van de ex-partner wijst op een neiging tot impulsief gedrag onder stress.",
+    "Een screenshot uit een AI-herinneringsmodule toont een figuur die bij Mae aanbelde vlak vóór haar dood – hij draagt een donker jack, zoals Sam vaak droeg.",
+    "Er werd een geblokkeerd nummer gebeld naar Mae’s telefoon om 02:10 — Sam gebruikte vaker prepaid-telefoons na hun breuk."
+  ],
+  "Onbekende partner": [
+    "Een beveiligingsdrone nam schaduwen waar op de gang die niet herkend werden door het biometrisch systeem.",
+    "Op Mae’s tafel lag een ongeopende fles wijn met een kaartje: 'Vanavond jij & ik?' — de handschriftstijl komt niet overeen met bekende contacten.",
+    "De AI-assistent meldde 'nieuwe stem zonder registratie' kort na middernacht.",
+    "Een kapstokhaak brak recent af — forensisch onderzoek toont sporen van vers vocht en vezels van een onbekend kledingstuk.",
+    "Een versleuteld bericht op Mae’s horloge bevatte hartjes-emoji’s van een niet-opgeslagen afzender."
+  ],
+  "Vriendin": [
+    "De toegangsgeschiedenis toont dat Mae’s deur op een ongewoon tijdstip werd geopend met een persoonlijke sleutel.",
+    "Er lag een half opgegeten chocoladereep op het aanrecht — Mae hield er niet van, maar haar zus wel.",
+    "In het slimme lichtsysteem stond een favoriet kleurenschema genaamd ‘Jade’, exact wat de zus gebruikte.",
+    "Er was een koffiemok met lippenstiftsporen gevonden — merk komt overeen met een product dat zij op sociale media promootte.",
+    "Een door AI gefilterd spraakfragment bevat emotionele spanning tussen Mae en een vrouwelijke stem die 'je liegt altijd' zegt."
+  ],
+  "Yvonne de Vries": [
+    "De AI-keukenmodule bevat een aangepast voedingsschema dat niet van Mae zelf afkomstig was.",
+    "Yvonne’s medische pas werd recent gescand in het appartementencomplex, ondanks dat zij beweerde er niet meer te komen.",
+    "Er lagen kussenvezels op de bank die overeenkomen met het textiel van Yvonne’s huis.",
+    "Een beveiligde AI-sessie over familieconflicten werd 2 dagen vóór Mae’s dood verwijderd.",
+    "Er werd een geurstof in de badkamer aangetroffen die Yvonne vaak gebruikte, volgens Mae’s smartparfumlog."
+  ],
+  "Arjan de Vries": [
+    "Een AI-hulpapp registreerde een onverwachte GPS-activatie van Arjan’s chip op 25 juli dichtbij Mae’s flat.",
+    "Er zijn banktransacties van kleine bedragen tussen Arjan en een onbekend account, vlak vóór het incident.",
+    "Een hologram-projector in Mae’s flat bevat restbeelden van een mannelijke bezoeker — gezicht onherkenbaar, maar postuur lijkt op Arjan.",
+    "Er is een mislukte poging tot toegang geregistreerd met een oude familienaamcode.",
+    "Een slimme spiegel gaf de melding 'Vreemde aanwezigheid herkend. Alertniveau: geel' om 02:12 uur."
+  ]
+};
+
 
     function getSeenClues(){
       return JSON.parse(localStorage.getItem('seenClues') || '[]');
     }
+
     function saveClue(c){
       const arr = getSeenClues();
       if (!arr.includes(c)){
@@ -101,16 +102,52 @@
       }
     }
 
-    const seen = getSeenClues();
-    let pool = clues[killer].filter(c => !seen.includes(c));
-    let pick;
-    if (pool.length > 0) {
-      pick = pool[Math.floor(Math.random()*pool.length)];
-      saveClue(pick);
-    } else {
-      pick = clues[killer][Math.floor(Math.random()*clues[killer].length)];
+    function getVisitedPages(){
+      return JSON.parse(localStorage.getItem("visitedPages") || "[]");
     }
+
+    function markPageVisited(){
+      const visited = getVisitedPages();
+      if (!visited.includes(page)) {
+        visited.push(page);
+        localStorage.setItem("visitedPages", JSON.stringify(visited));
+        return false;
+      }
+      return true;
+    }
+
+    const alreadyVisited = markPageVisited();
+    let pick;
+
+    if (alreadyVisited) {
+      const saved = JSON.parse(localStorage.getItem("cluePerPage") || "{}");
+      pick = saved[page] || "🔁 Deze clue heb je al gescand. Ga op zoek naar clue 3 en vind de dader uit.";
+
+    } else {
+      const seen = getSeenClues();
+      const pool = clues[killer].filter(c => !seen.includes(c));
+      pick = pool.length > 0
+        ? pool[Math.floor(Math.random() * pool.length)]
+        : clues[killer][Math.floor(Math.random() * clues[killer].length)];
+      saveClue(pick);
+
+      const cluePerPage = JSON.parse(localStorage.getItem("cluePerPage") || "{}");
+      cluePerPage[page] = pick;
+      localStorage.setItem("cluePerPage", JSON.stringify(cluePerPage));
+    }
+
     document.getElementById('clue').innerText = pick;
+    if (pick.startsWith("🔁 Deze clue heb je al gescand")) {
+  const clueEl = document.getElementById("clue");
+  clueEl.style.fontSize = "1.6rem";
+  clueEl.style.padding = "2rem";
+  clueEl.style.border = "1px solid #999";
+  clueEl.style.background = "rgba(255, 255, 255, 0.05)";
+  clueEl.style.borderRadius = "10px";
+  clueEl.style.marginTop = "2rem";
+  clueEl.style.textAlign = "center";
+}
+
 
     function updateProgress(){
       const count = getSeenClues().length, total = 5;
@@ -120,42 +157,74 @@
       bar.textContent = `${count}/${total}`;
     }
 
-    function updateTimer(){
-      const end  = +localStorage.getItem('endTime');
-      const diff = end - Date.now();
-      const el   = document.getElementById('timer');
-      if (diff <= 0) {
-        el.textContent = '⏰ Tijd op!';
-        clearInterval(timerInt);
+   function updateTimer() {
+      const now = Date.now();
+      const end = parseInt(localStorage.getItem("endTime"), 10);
+      const el = document.getElementById("timer");
+
+      if (now > end) {
+        const overtimeKey = "overtimeEnd";
+
+        if (!localStorage.getItem(overtimeKey)) {
+          const overtimeEnd = now + 60 * 1000; // 1 minuut extra
+          localStorage.setItem(overtimeKey, overtimeEnd);
+          el.textContent = "⏰ Tijd op! Je hebt nog 1 minuut...";
+        } else {
+          const overtimeEnd = parseInt(localStorage.getItem(overtimeKey), 10);
+          const remaining = overtimeEnd - now;
+
+          if (remaining <= 0) {
+            // reset game
+            localStorage.removeItem("gameStarted");
+            localStorage.removeItem("seenClues");
+            localStorage.removeItem("visitedPages");
+            localStorage.removeItem("cluePerPage");
+            localStorage.removeItem("killer");
+            localStorage.removeItem("endTime");
+            localStorage.removeItem("overtimeEnd");
+            location.reload();
+          } else {
+            const m = String(Math.floor(remaining / 60000)).padStart(2, "0");
+            const s = String(Math.floor((remaining % 60000) / 1000)).padStart(2, "0");
+            el.textContent = `⏰ Extra tijd: ${m}:${s}`;
+          }
+        }
       } else {
-        const m = String(Math.floor(diff/60000)).padStart(2,'0');
-        const s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+        const diff = end - now;
+        const m = String(Math.floor(diff / 60000)).padStart(2, "0");
+        const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
         el.textContent = `${m}:${s}`;
       }
     }
+
     const timerInt = setInterval(updateTimer, 1000);
 
-    document.getElementById('toggleClues').onclick = () => {
-      const dd = document.getElementById('clue-dropdown');
-      if (dd.classList.contains('open')){
-        dd.classList.remove('open');
+    document.getElementById("toggleClues").onclick = () => {
+      const dd = document.getElementById("clue-dropdown");
+      if (dd.classList.contains("open")){
+        dd.classList.remove("open");
       } else {
-        const ul = document.getElementById('clue-list');
-        ul.innerHTML = '';
+        const ul = document.getElementById("clue-list");
+        ul.innerHTML = "";
         getSeenClues().forEach(c => {
-          const li = document.createElement('li');
+          const li = document.createElement("li");
           li.textContent = c;
           ul.appendChild(li);
         });
-        dd.classList.add('open');
+        dd.classList.add("open");
       }
     };
 
-    window.addEventListener('load', ()=>{
-      document.getElementById('clueContent').classList.add('visible');
+    window.addEventListener("load", () => {
+      document.getElementById("clueContent").classList.add("visible");
       updateProgress();
       updateTimer();
     });
   </script>
 </body>
 </html>
+
+
+
+
+

@@ -57,9 +57,9 @@
       line-height: 1.5;
     }
 
-    button {
+    .btn {
       display: inline-block;
-      margin-top: 40px;
+      margin-top: 30px;
       padding: 15px 30px;
       background: #ff4444;
       color: #000;
@@ -70,28 +70,161 @@
       transition: 0.3s;
     }
 
-    button:hover {
+    .btn:hover {
       background: red;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.97);
+      color: #ff4444;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      z-index: 999;
+      overflow-y: auto;
+    }
+
+    .overlay h2 {
+      font-size: 26px;
+      margin-bottom: 15px;
+    }
+
+    .overlay p {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #ff9999;
+      max-width: 700px;
+    }
+
+    .overlay ul {
+      max-width: 600px;
+      text-align: left;
+      list-style: disc;
+      padding-left: 20px;
+    }
+
+    .overlay li {
+      margin-bottom: 10px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      font-size: 28px;
+      color: #f00;
+      background: none;
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body class="wrong-bg">
-  <div class="content">
+  <div class="content" id="mainContent">
     <h1>💀 Fout geraden...</h1>
-    <p>Dit was niet de juiste moordenaar.<br>Maar geen zorgen, je kunt het opnieuw proberen.</p>
-    <button id="retry">🔁 Probeer opnieuw</button>
+    <p>Je koos <strong id="wrongChoice">...</strong><br>Maar dat was niet de juiste moordenaar.</p>
+    <button class="btn" onclick="openHint()">🔍 Waarom was het iemand anders?</button>
+    <button class="btn" onclick="retry()">🔁 Probeer opnieuw</button>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <button class="close-btn" onclick="closeHint()">❌</button>
+    <h2>De juiste moordenaar was:</h2>
+    <p><strong id="actualKillerName"></strong></p>
+    <p id="killerExplanation"></p>
+    <ul id="clueList"></ul>
   </div>
 
   <script>
-    document.getElementById('retry').addEventListener('click', () => {
-      // Reset alle game data
-      localStorage.removeItem('killer');
-      localStorage.removeItem('seenClues');
-      localStorage.removeItem('gameStarted');
-      localStorage.removeItem('endTime');
-      // Terug naar start
+    const killer = localStorage.getItem("killer");
+    const seenClues = JSON.parse(localStorage.getItem("seenClues") || "[]");
+    const chosen = localStorage.getItem("chosenKiller") || "Onbekend";
+
+    const allClues = {
+      "Sam Schmit": [
+        "De forensische chip registreerde een mannelijke aanwezigheid om 02:16.",
+        "De stemdetectie registreerde een agressieve toon zonder profiel.",
+        "Oude toegangs-ID gedeeld tijdens huwelijk.",
+        "Vingerafdrukken met verhoogde cortisolsporen op medicijnverpakking.",
+        "Laatste gedachte: herinnering aan mishandeling."
+      ],
+      "Onbekende partner": [
+        "AI-chatlog bevatte berichten van onbekend contact: 'Vertrouw me…'",
+        "DNA op wijnglas — geen match in databanken.",
+        "Holografische projectie geactiveerd op slaapkamerwand.",
+        "Huischip detecteerde dopamine — romantisch contact?",
+        "Laatste gedachte: 'Waarom heb ik je vertrouwd?'"
+      ],
+      "Vriendin/zus": [
+        "Geen braaksporen — maar toegang met sleutel.",
+        "Boodschap op spiegel met bekende lipstickkleur.",
+        "Armband met familielid-haareiwitten gevonden.",
+        "Gedachte: 'Ze begrijpt Juna niet zoals ik dat doe.'",
+        "AI-chip registreerde innerlijke strijd over voogdij."
+      ],
+      "Yvonne de Vries": [
+        "112-oproep noemde Mae’s naam pas laat.",
+        "Handafdruk met kalmeringsmiddel op muur.",
+        "Chip detecteerde afhankelijkheid van ouder figuur.",
+        "Kopje met kalmeermiddelen en haar DNA.",
+        "Herinnering: 'Laat me los, mam!'"
+      ],
+      "Arjan de Vries": [
+        "Brief: 'Liefste dochter, of moet ik zeggen vreemdeling?'",
+        "Nicotine-aanslag op Mae’s toetsenbord — zij rookte niet.",
+        "Geheime map met info over vader.",
+        "Herinnering: 'Waarom ben je nu pas terug?'",
+        "Laatste gedachte: 'Hij zei dat hij me zou beschermen…'"
+      ]
+    };
+
+    const explanations = {
+      "Sam Schmit": "Sam kende nog steeds de override-code van het slimme slot. Mae had al aangifte gedaan wegens mishandeling, maar niemand luisterde. Hij had toegang en een motief.",
+      "Onbekende partner": "Er is bewijs van geheime ontmoetingen, een onbekend DNA-profiel en romantisch contact. De holografische projecties en hersensignalen wijzen op manipulatie en verraad.",
+      "Vriendin/zus": "Ze had een sleutel, een emotionele band én een motief: jaloezie. De boodschap op de spiegel was persoonlijk en haar haar werd op een armband gevonden.",
+      "Yvonne de Vries": "Ze handelde koel en berekend. Haar kalmeermiddelen, late melding bij 112 en controle over Mae’s leven wijzen op een moeder die niet kon loslaten.",
+      "Arjan de Vries": "Arjan keerde plots terug na jaren afwezigheid. Hij wist waar Mae woonde, rookte in haar huis en liet een cryptische brief achter. Hij was geen onbekende — hij was familie."
+    };
+
+    document.getElementById("wrongChoice").innerText = chosen;
+
+    function openHint() {
+      document.getElementById("mainContent").style.display = "none";
+      document.getElementById("overlay").style.display = "flex";
+
+      const actualKillerName = document.getElementById("actualKillerName");
+      const killerExplanation = document.getElementById("killerExplanation");
+      const clueList = document.getElementById("clueList");
+
+      actualKillerName.textContent = killer;
+      killerExplanation.textContent = explanations[killer] || "";
+
+      clueList.innerHTML = "";
+      const clues = allClues[killer] || [];
+      clues.forEach(clue => {
+        if (seenClues.includes(clue)) {
+          const li = document.createElement("li");
+          li.textContent = clue;
+          clueList.appendChild(li);
+        }
+      });
+    }
+
+    function closeHint() {
+      document.getElementById("mainContent").style.display = "block";
+      document.getElementById("overlay").style.display = "none";
+    }
+
+    function retry() {
+      localStorage.clear();
       window.location.href = 'index.html';
-    });
+    }
   </script>
 </body>
 </html>

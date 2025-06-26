@@ -16,19 +16,12 @@
   <!-- Wrapper voor progress, timer & clue -->
   <div class="clue-wrapper">
     <div class="clue-container" id="clueContent">
-
-      <!-- TIMER -->
       <div class="timer" id="timer">10:00</div>
-
-      <!-- PROGRESS-BAR -->
       <div class="progress-container">
         <div class="progress-bar" id="progressBar">0/5</div>
       </div>
-
-      <!-- DYNAMISCHE CLUE -->
       <h1>Clue 1</h1>
       <p id="clue"></p>
-
       <a href="index.html" class="back-btn">Terug naar start</a>
     </div>
   </div>
@@ -36,74 +29,67 @@
   <script>
     const page = window.location.pathname;
 
-    // 1. INIT
+    // Init game session
     if (!localStorage.getItem("gameStarted")) {
       localStorage.setItem("gameStarted", "1");
       localStorage.setItem("seenClues", "[]");
       localStorage.setItem("visitedPages", "[]");
       localStorage.setItem("cluePerPage", "{}");
-      localStorage.setItem("endTime", Date.now() + 10*60*1000);
+      localStorage.setItem("endTime", Date.now() + 10 * 60 * 1000);
     }
 
     if (!localStorage.getItem("killer")) {
-      const ks = ["Alexia","Brian","Carmen","Dylan","Elif","Faas"];
+      const ks = ["Sam Schmit", "Onbekende partner", "Vriendin", "Yvonne de Vries", "Arjan de Vries"];
       localStorage.setItem("killer", ks[Math.floor(Math.random() * ks.length)]);
     }
 
     const killer = localStorage.getItem("killer");
 
     const clues = {
-      "Alexia":[
-        "Een haarstrik met bloed lag naast het slachtoffer – Alexia droeg diezelfde strik.",
-        "Alexia werd gespot vlakbij het slachtoffer kort voor de moord.",
-        "Er is een vingerafdruk gevonden op het mes die bij Alexia hoort.",
-        "Alexia had een motief vanwege een ruzie van gisteren.",
-        "Een wit jurkje van Alexia is beschadigd en zit onder het bloed."
+      "Sam Schmit": [
+        "De forensische chip registreerde een mannelijke aanwezigheid om 02:16, vlak voor Mae’s overlijden.",
+        "De stemdetectie van de huisassistent noteerde 'agressieve toonhoogte', niet herleidbaar tot een stemprofiel.",
+        "De beveiligingslogboeken tonen een oude toegangs-ID, ooit gedeeld tijdens een huwelijk.",
+        "Een van de medicijnverpakkingen bevatte vingerafdrukken met verhoogde cortisolsporen.",
+        "De hersenchip registreerde een plotselinge piek in angst — gevolgd door herinneringen aan mishandeling uit het verleden."
       ],
-      "Brian":[
-        "Een gescheurde leren jas werd gevonden – precies zoals Brian die altijd draagt.",
-        "Brian's voetafdrukken zijn gevonden op de plaats delict.",
-        "Brian heeft een alibi dat niet klopt volgens getuigen.",
-        "Een brief met bedreigingen aan het slachtoffer werd gevonden in Brian’s kamer.",
-        "Brian was de laatste die het slachtoffer levend zag."
+      "Onbekende partner": [
+        "In Mae's AI-chatlog staat een reeks berichten van een onbekende contactpersoon: 'Vertrouw me... ik ben niet zoals hem'.",
+        "Er werd DNA gevonden op een wijnglas in de keuken, geen match in publieke of medische databanken.",
+        "Een onbekende holografische projectie werd geactiveerd op haar slaapkamerwand rond 01:30.",
+        "De huischip detecteerde verhoogde dopamine bij Mae rond 01:45, doorgaans gelinkt aan romantisch contact.",
+        "De chip registreerde de laatste gedachte van Mae: 'Waarom heb ik je vertrouwd?'"
       ],
-      "Carmen":[
-        "De spiegel bevatte lippenstiftletters. Carmen had die kleur net gekocht.",
-        "Carmen's sieraden werden gevonden vlakbij het slachtoffer.",
-        "Een krabspoor op het slachtoffer matcht met Carmen’s nagels.",
-        "Carmen was jaloers op het slachtoffer vanwege een promotie.",
-        "Er is een haarlok van Carmen gevonden in de kamer."
+      "Vriendin": [
+        "De voordeur was niet geforceerd – en slechts drie personen hadden sleuteltoegang.",
+        "Op de spiegel zat een korte boodschap in lippenstift: 'Je weet dat ik gelijk heb', kleurcode matcht een bekend profiel.",
+        "In de kamer lag een armband van biologisch textiel met haareiwitten van een familielid.",
+        "Op de chip stond een korte, verwijderde gedachte: 'Ze begrijpt Juna niet zoals ik dat doe'.",
+        "De AI-chip registreerde een innerlijke strijd over voogdij — direct voor overlijden."
       ],
-      "Dylan":[
-        "Een polsbandje met een clublogo werd gevonden. Dylan was daar gisteren nog.",
-        "Dylan heeft een geschiedenis met het slachtoffer die niet bekend is.",
-        "Het moordwapen werd gevonden met Dylan’s DNA.",
-        "Dylan werd gespot vlakbij het huis van het slachtoffer.",
-        "Dylan's telefoon toont verdachte berichten vlak voor de moord."
+      "Yvonne de Vries": [
+        "Tijdens de 112-oproep noemde de melder Mae’s naam pas 17 seconden na aanvang.",
+        "Op de muur zat een handafdruk met verhoogde hoeveelheid kalmeringsmiddel.",
+        "De chip detecteerde patronen van overmatige afhankelijkheid van een ouder figuur.",
+        "Een kopje op het aanrecht bevatte kalmeermiddelen en haar DNA.",
+        "In de chip was een herinnering opgeslagen waarin Mae schreeuwde: 'Laat me los, mam!'"
       ],
-      "Elif":[
-        "In de afvoer zat een zilveren ring die Elif altijd draagt.",
-        "Elif heeft een motief vanwege een geldkwestie met het slachtoffer.",
-        "Elif's kleding heeft bloedsporen die passen bij het slachtoffer.",
-        "Een getuige zag Elif vlak voor de moord in de buurt.",
-        "Elif’s pasje werd gevonden in de tas van het slachtoffer."
-      ],
-      "Faas":[
-        "Er lag een kapotte telefoon met Faas’ ID-kaart ernaast.",
-        "Faas werd betrapt op liegen over zijn verblijfplaats.",
-        "Faas heeft de sleutel van het huis waar de moord gebeurde.",
-        "Er zijn camerabeelden waar Faas vlak voor de moord te zien is.",
-        "Faas had ruzie met het slachtoffer die uit de hand liep."
+      "Arjan de Vries": [
+        "In de brievenkast zat een brief met de aanhef 'Liefste dochter, of moet ik zeggen vreemdeling?'",
+        "Op het toetsenbord van Mae’s computer zat nicotine-aanslag van een type sigaret dat ze zelf niet rookte.",
+        "Een geheime map op haar computer bevatte gescande documenten over het verleden van haar vader.",
+        "De chip registreerde een herinnering: 'Waarom ben je nu pas terug in mijn leven?'",
+        "De laatste gedachte op de hersenchip was: 'Hij zei dat hij me altijd zou beschermen…'"
       ]
     };
 
-    function getSeenClues(){
+    function getSeenClues() {
       return JSON.parse(localStorage.getItem('seenClues') || '[]');
     }
-    function getVisitedPages(){
+    function getVisitedPages() {
       return JSON.parse(localStorage.getItem("visitedPages") || "[]");
     }
-    function markPageVisited(){
+    function markPageVisited() {
       const visited = getVisitedPages();
       if (!visited.includes(page)) {
         visited.push(page);
@@ -113,9 +99,9 @@
       return true;
     }
 
-    function saveClue(c){
+    function saveClue(c) {
       const arr = getSeenClues();
-      if (!arr.includes(c)){
+      if (!arr.includes(c)) {
         arr.push(c);
         localStorage.setItem("seenClues", JSON.stringify(arr));
       }
@@ -123,9 +109,13 @@
 
     const alreadyVisited = markPageVisited();
     let pick;
+
     if (alreadyVisited) {
       const saved = JSON.parse(localStorage.getItem("cluePerPage") || "{}");
-      pick = saved[page] || "Deze clue heb je al gehad.";
+      pick = saved[page];
+      if (!pick) {
+        pick = "🔁 Deze clue heb je al gescand. Ga op zoek naar clue 2 en vind de dader uit.";
+      }
     } else {
       const seen = getSeenClues();
       const pool = clues[killer].filter(c => !seen.includes(c));
@@ -138,9 +128,21 @@
       cluePerPage[page] = pick;
       localStorage.setItem("cluePerPage", JSON.stringify(cluePerPage));
     }
-    document.getElementById("clue").innerText = pick;
 
-    function updateProgress(){
+    const clueEl = document.getElementById("clue");
+    clueEl.innerText = pick;
+
+    if (pick.startsWith("🔁")) {
+      clueEl.style.fontSize = "1.6rem";
+      clueEl.style.padding = "2rem";
+      clueEl.style.border = "1px solid #999";
+      clueEl.style.background = "rgba(255, 255, 255, 0.05)";
+      clueEl.style.borderRadius = "10px";
+      clueEl.style.marginTop = "2rem";
+      clueEl.style.textAlign = "center";
+    }
+
+    function updateProgress() {
       const count = getSeenClues().length, total = 5;
       const pct = Math.min(100, count / total * 100);
       const bar = document.getElementById("progressBar");
@@ -148,24 +150,43 @@
       bar.textContent = `${count}/${total}`;
     }
 
-    function updateTimer(){
-      const end = +localStorage.getItem("endTime");
-      const diff = end - Date.now();
+    function updateTimer() {
+      const now = Date.now();
+      const end = parseInt(localStorage.getItem("endTime"), 10);
       const el = document.getElementById("timer");
-      if (diff <= 0){
-        el.textContent = "⏰ Tijd op!";
-        clearInterval(timerInt);
+
+      if (now > end) {
+        const overtimeKey = "overtimeEnd";
+        if (!localStorage.getItem(overtimeKey)) {
+          const overtimeEnd = now + 60 * 1000;
+          localStorage.setItem(overtimeKey, overtimeEnd);
+          el.textContent = "⏰ Tijd op! Je hebt nog 1 minuut...";
+        } else {
+          const overtimeEnd = parseInt(localStorage.getItem(overtimeKey), 10);
+          const remaining = overtimeEnd - now;
+
+          if (remaining <= 0) {
+            localStorage.clear();
+            location.reload();
+          } else {
+            const m = String(Math.floor(remaining / 60000)).padStart(2, "0");
+            const s = String(Math.floor((remaining % 60000) / 1000)).padStart(2, "0");
+            el.textContent = `⏰ Extra tijd: ${m}:${s}`;
+          }
+        }
       } else {
-        const m = String(Math.floor(diff / 60000)).padStart(2,"0");
-        const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,"0");
+        const diff = end - now;
+        const m = String(Math.floor(diff / 60000)).padStart(2, "0");
+        const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
         el.textContent = `${m}:${s}`;
       }
     }
+
     const timerInt = setInterval(updateTimer, 1000);
 
     document.getElementById("toggleClues").onclick = () => {
       const dd = document.getElementById("clue-dropdown");
-      if (dd.classList.contains("open")){
+      if (dd.classList.contains("open")) {
         dd.classList.remove("open");
       } else {
         const ul = document.getElementById("clue-list");
@@ -185,6 +206,5 @@
       updateTimer();
     });
   </script>
-
 </body>
 </html>
