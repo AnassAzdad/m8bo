@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
   <meta charset="UTF-8" />
   <title>Kies de Moordenaar</title>
@@ -96,8 +97,41 @@
       line-height: 1.5;
       margin-bottom: 10px;
     }
+
+    @media screen and (max-width: 1000px) {
+      body {}
+
+      .container {
+        width: 90vw;
+        height: 90vh;
+      }
+
+      h1 {
+        font-size: 80px;
+      }
+
+      .killer-buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        height: 50%;
+        gap: 50px;
+      }
+
+      .killer-buttons>button {
+        height: 200px;
+        color: red;
+        font-size: 600%;
+      }
+
+      .return-btn {
+        font-size: 350%;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Wie denk jij dat de moordenaar is?</h1>
@@ -150,4 +184,5 @@
     }
   </script>
 </body>
+
 </html>

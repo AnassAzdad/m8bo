@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
   <meta charset="UTF-8">
   <title>Detective Terminal</title>
@@ -11,6 +12,7 @@
       left: 1rem;
       z-index: 1000;
     }
+
     #clue-widget button {
       background: rgba(60, 0, 60, 0.9);
       color: #e0aaff;
@@ -21,6 +23,7 @@
       cursor: pointer;
       box-shadow: 0 0 0.3rem #e0aaff, inset 0 0 0.2rem #330033;
     }
+
     #clue-widget button:hover {
       background: rgba(80, 0, 80, 0.95);
     }
@@ -29,27 +32,30 @@
       position: fixed;
       top: 5rem;
       left: 1rem;
-      background: rgba(20,0,20,0.95);
+      background: rgba(20, 0, 20, 0.95);
       border: 2px solid #e0aaff;
       border-radius: 0.4rem;
       padding: 0.5rem;
       width: 160px;
       max-height: 100px;
       overflow-y: auto;
-      box-shadow: 0 0 0.8rem rgba(0,0,0,0.7);
+      box-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.7);
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease;
     }
+
     #clue-dropdown.open {
       opacity: 1;
       visibility: visible;
     }
+
     #clue-dropdown ul {
       list-style: disc inside;
       margin: 0;
       padding: 0;
     }
+
     #clue-dropdown li {
       margin: 0.3rem 0;
       font-size: 1.1rem;
@@ -57,9 +63,11 @@
       line-height: 1.2;
       word-wrap: break-word;
     }
+
     #clue-dropdown::-webkit-scrollbar {
       width: 5px;
     }
+
     #clue-dropdown::-webkit-scrollbar-thumb {
       background: #e0aaff;
       border-radius: 2px;
@@ -73,7 +81,7 @@
     }
 
     .suspect-card {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid #444;
       padding: 0.6rem 1rem;
       border-radius: 0.4rem;
@@ -81,168 +89,198 @@
       font-size: 1.3rem;
       flex: 1;
     }
+
     .suspect-card strong {
       color: #e0aaff;
       display: block;
       font-size: 1.5rem;
     }
-  </style>
-</head>
-<body>
-<audio id="bgAudio2" src="sounds/forest.mp3" autoplay loop></audio>
-<script>
-  setTimeout(() => {
-    const a = document.getElementById('bgAudio2');
-    a.volume = 0;
-    let fade = setInterval(() => {
-      if (a.volume < 0.3) a.volume = Math.min(a.volume + 0.01, 0.3);
-      else clearInterval(fade);
-    }, 200);
-  }, 5000);
-</script>
 
-<button id="resetBtn">⟲</button>
-<script>
-  document.getElementById("resetBtn").onclick = () => {
-    if (confirm("Weet je zeker dat je opnieuw wilt beginnen?")) {
-      localStorage.clear();
-      window.location.href = "index.html";
-    }
-  };
-</script>
+    @media screen and (max-width: 1000px) {
+      html{
+        font-size: 20px;
+      }
 
-<script>
-  if (!localStorage.getItem('gameStarted')) {
-    localStorage.setItem('gameStarted','1');
-    localStorage.setItem('seenClues', JSON.stringify([]));
-    localStorage.setItem('endTime', Date.now() + 10 * 60 * 1000);
-  }
-</script>
+      .container{
+        margin-top: 0;
+        width: 90vw;
+      }
 
-<div id="clue-widget">
-  <button id="toggleClues">Clues verzameld</button>
-  <div id="clue-dropdown">
-    <ul id="clue-list"></ul>
-  </div>
-</div>
+      .suspect-grid{
+        flex-direction: column;
+        margin-bottom: 3rem;
+      }
 
-<div class="container">
-  <div id="timer" class="timer">10:00</div>
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar">0/5</div>
-  </div>
+      .suspect-card{
+        font-size: 40px;
+      }
 
-  <h1>🧠 AI Detective Interface – 2045</h1>
-  <p><strong>ATTENTIE:</strong> Mae de Vries (33) is op 25 juli 2045 dood aangetroffen in haar badkamer in Amsterdam. Haar moeder vond haar lichaam. De menselijke politie heeft de zaak niet opgepakt wegens “lage prioriteit”.</p>
-
-  <p>Jij bent Unit Δ42 – een autonome AI. Jouw taak is om de zaak te analyseren aan de hand van forensische sporen, AI-analyse en geavanceerde technieken uit 2045.</p>
-
-  <p>Er zijn 6 locaties met bewijs. Eén is al gescand: de spiegel. De overige vijf sporen bevatten QR-codes die je toegang geven tot unieke clues. Verzamel ze allemaal om de dader te ontmaskeren.</p>
-
-  <h2>Verdachten</h2>
-  <div class="suspect-grid">
-    <div class="suspect-card">🧔 <strong>Sam Schmit</strong> <br>Ex-man met geweldsverleden</div>
-    <div class="suspect-card">❓ <strong>Onbekende partner/date</strong><br>Romantisch contact via app</div>
-    <div class="suspect-card">👩‍🦰 <strong>Vriendin of zus</strong><br>Had sleutel, onenigheid met Mae</div>
-    <div class="suspect-card">👵 <strong>Yvonne de Vries</strong><br>Moeder, vond lichaam</div>
-    <div class="suspect-card">👨‍🦳 <strong>Arjan de Vries</strong><br>Vader, emotionele conflicten</div>
-  </div>
-
-  <a href="result.html">🔎 Ik ben klaar om de dader te kiezen</a>
-</div>
-
-<script>
-  if (!localStorage.getItem('killer')) {
-    const killers = [
-      'Sam Schmit',
-      'Onbekende partner',
-      'Vriendin/zus',
-      'Yvonne de Vries',
-      'Arjan de Vries'
-    ];
-    localStorage.setItem('killer', killers[Math.floor(Math.random() * killers.length)]);
-  }
-
-  function updateProgress() {
-    const seen  = JSON.parse(localStorage.getItem('seenClues')||'[]');
-    const total = 5;
-    const count = seen.length;
-    const pct   = Math.min((count/total)*100,100);
-    const bar   = document.getElementById('progressBar');
-    bar.style.width   = pct + '%';
-    bar.textContent   = `${count}/${total}`;
-  }
-function updateTimer() {
-  const now = Date.now();
-  const end = parseInt(localStorage.getItem("endTime"), 10);
-  const el = document.getElementById("timer");
-
-  if (now > end) {
-    const overtimeKey = "overtimeEnd";
-
-    if (!localStorage.getItem(overtimeKey)) {
-      const overtimeEnd = now + 60 * 1000; // 1 minuut extra
-      localStorage.setItem(overtimeKey, overtimeEnd);
-      el.textContent = "⏰ Tijd op! Je hebt nog 1 minuut...";
-    } else {
-      const overtimeEnd = parseInt(localStorage.getItem(overtimeKey), 10);
-      const remaining = overtimeEnd - now;
-
-      if (remaining <= 0) {
-        // reset game
-        localStorage.removeItem("gameStarted");
-        localStorage.removeItem("seenClues");
-        localStorage.removeItem("visitedPages");
-        localStorage.removeItem("cluePerPage");
-        localStorage.removeItem("killer");
-        localStorage.removeItem("endTime");
-        localStorage.removeItem("overtimeEnd");
-        location.reload(); 
-      } else {
-        const m = String(Math.floor(remaining / 60000)).padStart(2, "0");
-        const s = String(Math.floor((remaining % 60000) / 1000)).padStart(2, "0");
-        el.textContent = `⏰ Extra tijd: ${m}:${s}`;
+      .suspect-card > strong{
+        font-size: 40px;
       }
     }
-  } else {
-    const diff = end - now;
-    const m = String(Math.floor(diff / 60000)).padStart(2, "0");
-    const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
-    el.textContent = `${m}:${s}`;
-  }
-}
+  </style>
+</head>
+
+<body>
+  <audio id="bgAudio2" src="sounds/forest.mp3" autoplay loop></audio>
+  <script>
+    setTimeout(() => {
+      const a = document.getElementById('bgAudio2');
+      a.volume = 0;
+      let fade = setInterval(() => {
+        if (a.volume < 0.3) a.volume = Math.min(a.volume + 0.01, 0.3);
+        else clearInterval(fade);
+      }, 200);
+    }, 5000);
+  </script>
+
+  <button id="resetBtn">⟲</button>
+  <script>
+    document.getElementById("resetBtn").onclick = () => {
+      if (confirm("Weet je zeker dat je opnieuw wilt beginnen?")) {
+        localStorage.clear();
+        window.location.href = "index.html";
+      }
+    };
+  </script>
+
+  <script>
+    if (!localStorage.getItem('gameStarted')) {
+      localStorage.setItem('gameStarted', '1');
+      localStorage.setItem('seenClues', JSON.stringify([]));
+      localStorage.setItem('endTime', Date.now() + 10 * 60 * 1000);
+    }
+  </script>
+
+  <div id="clue-widget">
+    <button id="toggleClues">Clues verzameld</button>
+    <div id="clue-dropdown">
+      <ul id="clue-list"></ul>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="timer" class="timer">10:00</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">0/5</div>
+    </div>
+
+    <h1>🧠 AI Detective Interface – 2045</h1>
+    <p><strong>ATTENTIE:</strong> Mae de Vries (33) is op 25 juli 2045 dood aangetroffen in haar badkamer in Amsterdam.
+      Haar moeder vond haar lichaam. De menselijke politie heeft de zaak niet opgepakt wegens “lage prioriteit”.</p>
+
+    <p>Jij bent Unit Δ42 – een autonome AI. Jouw taak is om de zaak te analyseren aan de hand van forensische sporen,
+      AI-analyse en geavanceerde technieken uit 2045.</p>
+
+    <p>Er zijn 6 locaties met bewijs. Eén is al gescand: de spiegel. De overige vijf sporen bevatten QR-codes die je
+      toegang geven tot unieke clues. Verzamel ze allemaal om de dader te ontmaskeren.</p>
+
+    <h2>Verdachten</h2>
+    <div class="suspect-grid">
+      <div class="suspect-card">🧔 <strong>Sam Schmit</strong> <br>Ex-man met geweldsverleden</div>
+      <div class="suspect-card">❓ <strong>Onbekende partner/date</strong><br>Romantisch contact via app</div>
+      <div class="suspect-card">👩‍🦰 <strong>Vriendin of zus</strong><br>Had sleutel, onenigheid met Mae</div>
+      <div class="suspect-card">👵 <strong>Yvonne de Vries</strong><br>Moeder, vond lichaam</div>
+      <div class="suspect-card">👨‍🦳 <strong>Arjan de Vries</strong><br>Vader, emotionele conflicten</div>
+    </div>
+
+    <a href="result.html">🔎 Ik ben klaar om de dader te kiezen</a>
+  </div>
+
+  <script>
+    if (!localStorage.getItem('killer')) {
+      const killers = [
+        'Sam Schmit',
+        'Onbekende partner',
+        'Vriendin/zus',
+        'Yvonne de Vries',
+        'Arjan de Vries'
+      ];
+      localStorage.setItem('killer', killers[Math.floor(Math.random() * killers.length)]);
+    }
+
+    function updateProgress() {
+      const seen = JSON.parse(localStorage.getItem('seenClues') || '[]');
+      const total = 5;
+      const count = seen.length;
+      const pct = Math.min((count / total) * 100, 100);
+      const bar = document.getElementById('progressBar');
+      bar.style.width = pct + '%';
+      bar.textContent = `${count}/${total}`;
+    }
+    function updateTimer() {
+      const now = Date.now();
+      const end = parseInt(localStorage.getItem("endTime"), 10);
+      const el = document.getElementById("timer");
+
+      if (now > end) {
+        const overtimeKey = "overtimeEnd";
+
+        if (!localStorage.getItem(overtimeKey)) {
+          const overtimeEnd = now + 60 * 1000; // 1 minuut extra
+          localStorage.setItem(overtimeKey, overtimeEnd);
+          el.textContent = "⏰ Tijd op! Je hebt nog 1 minuut...";
+        } else {
+          const overtimeEnd = parseInt(localStorage.getItem(overtimeKey), 10);
+          const remaining = overtimeEnd - now;
+
+          if (remaining <= 0) {
+            // reset game
+            localStorage.removeItem("gameStarted");
+            localStorage.removeItem("seenClues");
+            localStorage.removeItem("visitedPages");
+            localStorage.removeItem("cluePerPage");
+            localStorage.removeItem("killer");
+            localStorage.removeItem("endTime");
+            localStorage.removeItem("overtimeEnd");
+            location.reload();
+          } else {
+            const m = String(Math.floor(remaining / 60000)).padStart(2, "0");
+            const s = String(Math.floor((remaining % 60000) / 1000)).padStart(2, "0");
+            el.textContent = `⏰ Extra tijd: ${m}:${s}`;
+          }
+        }
+      } else {
+        const diff = end - now;
+        const m = String(Math.floor(diff / 60000)).padStart(2, "0");
+        const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
+        el.textContent = `${m}:${s}`;
+      }
+    }
 
 
-  function populateCluesList() {
-    const seen = JSON.parse(localStorage.getItem('seenClues')||'[]');
-    const ul   = document.getElementById('clue-list');
-    ul.innerHTML = '';
-    if (seen.length === 0) {
-      const li = document.createElement('li');
-      li.textContent = 'Nog geen clues verzameld.';
-      ul.appendChild(li);
-    } else {
-      seen.forEach(c => {
+    function populateCluesList() {
+      const seen = JSON.parse(localStorage.getItem('seenClues') || '[]');
+      const ul = document.getElementById('clue-list');
+      ul.innerHTML = '';
+      if (seen.length === 0) {
         const li = document.createElement('li');
-        li.textContent = c;
+        li.textContent = 'Nog geen clues verzameld.';
         ul.appendChild(li);
-      });
+      } else {
+        seen.forEach(c => {
+          const li = document.createElement('li');
+          li.textContent = c;
+          ul.appendChild(li);
+        });
+      }
     }
-  }
 
-  document.getElementById('toggleClues').addEventListener('click', () => {
-    const dd = document.getElementById('clue-dropdown');
-    if (dd.classList.contains('open')) {
-      dd.classList.remove('open');
-    } else {
-      populateCluesList();
-      dd.classList.add('open');
-    }
-  });
+    document.getElementById('toggleClues').addEventListener('click', () => {
+      const dd = document.getElementById('clue-dropdown');
+      if (dd.classList.contains('open')) {
+        dd.classList.remove('open');
+      } else {
+        populateCluesList();
+        dd.classList.add('open');
+      }
+    });
 
-  updateProgress();
-  updateTimer();
-  const timerInterval = setInterval(updateTimer,1000);
-</script>
+    updateProgress();
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+  </script>
 </body>
+
 </html>
